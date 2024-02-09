@@ -1,3 +1,4 @@
+import threading
 import click
 import os
 import sys
@@ -29,10 +30,14 @@ def input_close():
 
 @input.command(name="custom")
 def input_custom():
-    """Send custom input to the device"""
-    kb = clnt.Kbrd()
-    kb.custom_input()
+    """Send custom input to the device using threading for concurrency."""
+    def run_custom_input():
+        kb = clnt.Kbrd()
+        kb.custom_input()
 
+    # Start a new thread for the custom input function
+    thread = threading.Thread(target=run_custom_input)
+    thread.start()
 
 @keypi.group()
 def server():
